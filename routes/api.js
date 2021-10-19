@@ -28,3 +28,20 @@ async function getRequestTwitter(search) {
         throw new Error('Unsuccessful request');
     }
 }
+
+router.get("/:query", (req, res) => {
+
+    //set the parameter form url as a variable for convienance
+    search = req.params.query;
+  
+    //call the apis
+    //TODO
+  
+    write.then((value) => {
+      //pass content to display page
+      res.end();
+    }).catch((e) => {
+      //if an error happens then render an error page
+      res.end();
+    })
+  });
