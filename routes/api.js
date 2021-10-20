@@ -38,9 +38,15 @@ router.get("/:query", (req, res) => {
   
     //call the apis
     //TODO
+
+    //temp twitter call
+    let twitter = getRequestTwitter(search);
+
+    console.log(twitter);
   
-    write.then((value) => {
+    twitter.then((value) => {
       //pass content to display page
+      console.log(value);
       res.end();
     }).catch((e) => {
       //if an error happens then render an error page
