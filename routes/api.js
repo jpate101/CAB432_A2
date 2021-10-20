@@ -31,6 +31,24 @@ async function getRequestTwitter(search) {
     }
 }
 
+function perform_SA(message) {
+
+    let { spawn } = require('child_process')
+
+    let process2 = spawn('python',['./SA.py', message.toString()]);
+
+    process2.stdout.on('data', (data) => {
+        temp = data.toString().split("\n");
+        console.log(temp[0]);
+        console.log(temp[1]);
+        console.log("___________");
+    });
+    process2.stderr.on('data', (data) => {
+        console.log(data.toString());
+    });
+    
+  }
+
 router.get("/:query", (req, res) => {
 
     //set the parameter form url as a variable for convienance
@@ -54,29 +72,12 @@ router.get("/:query", (req, res) => {
     })
 
     let testing_tweet = "textBlob sure looks like it has some interresting features";
+
+    let testing_tweet_array = ["textBlob sure looks like it has some interresting features","The new design is awful!","I’m not sure if I like the new design"];
+
+    testing_tweet_array.forEach(perform_SA);
     
-    let { spawn } = require('child_process')
-
-    let process2 = spawn('python',['./SA.py', testing_tweet.toString()]);
-
-    console.log('here start');
-
-    process2.stdout.on('data', (data) => {
-        //console.log('stdout: ${data}');
-        console.log(data.toString());
-        temp = data.toString().split("\n");
-        console.log(temp[0]);
-        console.log(temp[1]);
-        console.log("___________");
-    });
-
-    process2.stderr.on('data', (data) => {
-        //console.log('stderr: ${data}');
-        console.log(data.toString());
-    });
-
-    console.log('here end');
-
+    
 
   });
 
