@@ -1,5 +1,7 @@
 const needle = require('needle');
-const key = require('keys');
+const key = require("./keys");
+const express = require('express');
+const router = express.Router();
 
 const endpointUrl = `https://api.twitter.com/2/spaces/search`;
 
@@ -45,3 +47,5 @@ router.get("/:query", (req, res) => {
       res.end();
     })
   });
+
+  module.exports = router;
