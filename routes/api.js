@@ -74,9 +74,11 @@ router.get("/:query", (req, res) => {
 
       console.log("_____------_______ end");
 
+      console.log(value);
+
 
       res.render("api", {
-        tweets: twitter.data,
+        tweets: value.data,
         //sent: sent,
         query: search
       });
