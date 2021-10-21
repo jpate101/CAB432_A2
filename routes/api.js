@@ -70,9 +70,6 @@ router.get("/:query", (req, res) => {
       //if an error happens then render an error page
       res.end();
     })
-
-    let testing_tweet = "textBlob sure looks like it has some interresting features";
-
     let testing_tweet_array = ["textBlob sure looks like it has some interresting features","The new design is awful!","I’m not sure if I like the new design"];
 
     testing_tweet_array.forEach(perform_SA);
