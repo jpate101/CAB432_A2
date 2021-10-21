@@ -37,13 +37,14 @@ function perform_SA(message) {
 
     process2.stdout.on('data', (data) => {
         temp = data.toString().split("\n");
+        console.log(message);
         console.log(temp[0]);
         console.log(temp[1]);
         console.log("___________");
     });
-    process2.stderr.on('data', (data) => {
-        console.log(data.toString());
-    });
+    //process2.stderr.on('data', (data) => {
+    //    console.log(data.toString());
+    //});
     
   }
 
@@ -62,20 +63,33 @@ router.get("/:query", (req, res) => {
   
     twitter.then((value) => {
       //pass content to display page
-      console.log(value);
+      //console.log(value);
+
+      console.log("_____------_______ start");
+
+      for (let i = 0; i < value.meta.result_count; i++) {
+        //console.log(value.data[i].text);
+        perform_SA(value.data[i].text)
+      }
+
+      console.log("_____------_______ end");
+
+
       res.render("api", {
         tweets: twitter.data,
         //sent: sent,
         query: search
       });
+    
       res.end();
     }).catch((e) => {
       //if an error happens then render an error page
       res.end();
     })
-    let testing_tweet_array = ["textBlob sure looks like it has some interresting features","The new design is awful!","I’m not sure if I like the new design"];
+    //let testing_tweet_array = ["textBlob sure looks like it has some interresting features","The new design is awful!","I’m not sure if I like the new design"];
 
-    testing_tweet_array.forEach(perform_SA);
+    //testing_tweet_array.forEach(perform_SA);
+
     
     
 
