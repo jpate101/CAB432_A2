@@ -6,6 +6,9 @@ const app = express();
 const hostname = '127.0.0.1';
 const port = 9000;
 
+app.set('views', __dirname + '/views');
+app.set('view engine', 'pug');
+
 app.use(api);
 
 app.listen(port, function () {
