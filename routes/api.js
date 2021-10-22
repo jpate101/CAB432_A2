@@ -35,13 +35,15 @@ function perform_SA(message) {
 
     let process2 = spawn('python',['./SA.py', message.toString()]);
 
+    //console.log(process2);
+
     process2.stdout.on('data', (data) => {
         temp = data.toString().split("\n");
         console.log(message);
         console.log(temp[0]);
         console.log(temp[1]);
         console.log("___________");
-    });
+    });//.catch(e => console.log(e));
     //process2.stderr.on('data', (data) => {
     //    console.log(data.toString());
     //});
@@ -68,13 +70,14 @@ router.get("/:query", (req, res) => {
       console.log("_____------_______ start");
 
       for (let i = 0; i < value.meta.result_count; i++) {
-        //console.log(value.data[i].text);
+        console.log(value.data[i].text);
         perform_SA(value.data[i].text)
+        console.log(i);
       }
 
       console.log("_____------_______ end");
 
-      console.log(value);
+      //console.log(value);
 
 
       res.render("api", {
@@ -86,7 +89,7 @@ router.get("/:query", (req, res) => {
       res.end();
     }).catch((e) => {
       //if an error happens then render an error page
-      res.end();
+      //res.end();
     })
     //let testing_tweet_array = ["textBlob sure looks like it has some interresting features","The new design is awful!","I’m not sure if I like the new design"];
 
