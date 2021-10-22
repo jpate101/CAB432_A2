@@ -29,7 +29,7 @@ async function getRequestTwitter(search) {
     }
 }
 
-function perform_SA(message) {
+async function perform_SA(message) {
 
     let { spawn } = require('child_process')
 
@@ -37,17 +37,68 @@ function perform_SA(message) {
 
     //console.log(process2);
 
+    let out;
+
     process2.stdout.on('data', (data) => {
         temp = data.toString().split("\n");
         console.log(message);
         console.log(temp[0]);
         console.log(temp[1]);
         console.log("___________");
+
+        // out[0] = message;
+        // out[1] = term[0];
+        // out[2] = term[1];
+
     });//.catch(e => console.log(e));
-    //process2.stderr.on('data', (data) => {
-    //    console.log(data.toString());
-    //});
+    process2.stderr.on('data', (data) => {
+       console.log(data.toString());
+       out = data.toString();
+    });
+
+    return out;
     
+  }
+
+  async function apicall() {
+
+    let result = [];
+
+    let san = [];
+
+    let tweets = [];
+
+    let twitter = await getRequestTwitter(search);
+
+    //console.log(twitter);
+  
+    twitter.then((value) => {
+      console.log("_____------_______ start");
+
+      for (let i = 0; i < value.meta.result_count; i++) {
+        //console.log(value.data[i].text);
+        let sa = perform_SA(value.data[i].text);
+        tweets[i] = value.data[i].text;
+
+        //console.log(value.data[i].text);
+
+        sa.then((value2) => {
+          san[i] = value2;
+        })
+        //console.log(i);
+      }
+
+      console.log("_____------_______ end");
+
+    });
+
+    result.push(tweets);
+    result.push(san);
+
+    console.log(result[0]);
+    console.log("this should be at the end");
+
+    return result;
   }
 
 router.get("/:query", (req, res) => {
@@ -56,32 +107,14 @@ router.get("/:query", (req, res) => {
     search = req.params.query;
   
     //call the apis
-    //TODO
-
-    //temp twitter call
-    let twitter = getRequestTwitter(search);
-
-    console.log(twitter);
+    let calls = apicall();
   
-    twitter.then((value) => {
-      //pass content to display page
-      //console.log(value);
-
-      console.log("_____------_______ start");
-
-      for (let i = 0; i < value.meta.result_count; i++) {
-        console.log(value.data[i].text);
-        perform_SA(value.data[i].text)
-        console.log(i);
-      }
-
-      console.log("_____------_______ end");
+    calls.then((value) => {
 
       //console.log(value);
-
 
       res.render("api", {
-        tweets: value.data,
+        tweets: value[0],
         //sent: sent,
         query: search
       });
