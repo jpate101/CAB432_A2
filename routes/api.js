@@ -21,6 +21,9 @@ async function getRequestTwitter(search) {
         }
     })
 
+    console.log("called api");
+    //console.log(res.body);
+
     //return
     if (res.body) {
         return res.body;
@@ -31,34 +34,33 @@ async function getRequestTwitter(search) {
 
 async function perform_SA(message) {
 
+  let out = [];
+
+  for (let i = 0; i < message.meta.result_count; i++){
+
     let { spawn } = require('child_process')
 
     let process2 = spawn('python',['./SA.py', message.toString()]);
 
-    //console.log(process2);
-
-    let out;
-
     process2.stdout.on('data', (data) => {
         temp = data.toString().split("\n");
-        console.log(message);
+        //console.log(message);
         console.log(temp[0]);
         console.log(temp[1]);
         console.log("___________");
+        out.push(data.toString());
 
-        // out[0] = message;
-        // out[1] = term[0];
-        // out[2] = term[1];
-
-    });//.catch(e => console.log(e));
+    });
     process2.stderr.on('data', (data) => {
        console.log(data.toString());
-       out = data.toString();
+       out.push(data.toString());
     });
-
-    return out;
-    
   }
+
+  console.log(out);
+
+  return out;
+}
 
   async function apicall() {
 
@@ -68,34 +70,33 @@ async function perform_SA(message) {
 
     let tweets = [];
 
-    let twitter = await getRequestTwitter(search);
+    //const twitter = await getRequestTwitter(search);
 
     //console.log(twitter);
   
-    twitter.then((value) => {
+    await getRequestTwitter(search).then((value) => {
       console.log("_____------_______ start");
 
-      for (let i = 0; i < value.meta.result_count; i++) {
-        //console.log(value.data[i].text);
-        let sa = perform_SA(value.data[i].text);
-        tweets[i] = value.data[i].text;
+        perform_SA(value).then((value2) => {
+          san = value2;
+        });
 
-        //console.log(value.data[i].text);
-
-        sa.then((value2) => {
-          san[i] = value2;
-        })
-        //console.log(i);
-      }
+        for (let i = 0; i < value.meta.result_count; i++ ){
+          tweets.push(value.data[i].text);
+        }
+      
 
       console.log("_____------_______ end");
-
     });
+
+    
 
     result.push(tweets);
     result.push(san);
 
-    console.log(result[0]);
+    // console.log(result);
+    // console.log(result[0]);
+    // console.log(result[1]);
     console.log("this should be at the end");
 
     return result;
@@ -107,11 +108,7 @@ router.get("/:query", (req, res) => {
     search = req.params.query;
   
     //call the apis
-    let calls = apicall();
-  
-    calls.then((value) => {
-
-      //console.log(value);
+    apicall().then((value) => {
 
       res.render("api", {
         tweets: value[0],
