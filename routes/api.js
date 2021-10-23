@@ -32,34 +32,59 @@ async function getRequestTwitter(search) {
     }
 }
 
+async function pythonread(text){
+
+  let out;
+
+  let { spawn } = require('child_process')
+
+    let process2 = spawn('python',['./SA.py', text]);
+
+    await process2.stdout.on('close', (data) => {
+        temp = data.toString().split("\n");
+        //console.log(message);
+        //console.log(temp[0]);
+        //console.log(temp[1]);
+        //console.log("___________");
+        console.log(temp);
+        out = temp;
+    });
+
+    while(1){
+      console.log("weewee");
+      console.log(out);
+      if(out !== undefined){
+        return out;
+      }
+    }
+}
+
 async function perform_SA(message) {
 
   let out = [];
 
   for (let i = 0; i < message.meta.result_count; i++){
 
-    let { spawn } = require('child_process')
-
-    let process2 = spawn('python',['./SA.py', message.toString()]);
-
-    process2.stdout.on('data', (data) => {
-        temp = data.toString().split("\n");
-        //console.log(message);
-        console.log(temp[0]);
-        console.log(temp[1]);
-        console.log("___________");
-        out.push(data.toString());
-
+    await pythonread(message.data[i].text).then((value) =>{
+      out.push(value);
     });
-    process2.stderr.on('data', (data) => {
-       console.log(data.toString());
-       out.push(data.toString());
-    });
+    
+  //   process2.stderr.on('data', (data) => {
+  //      console.log(data.toString());
+  //   });
+
+    if(i + 1 === message.meta.result_count){
+      console.log("this is a fart joke");
+      console.log(out);
+      return out;
+    }
   }
 
   console.log(out);
 
-  return out;
+  console.log("why");
+  //return out;
+  
 }
 
   async function apicall() {
@@ -70,6 +95,8 @@ async function perform_SA(message) {
 
     let tweets = [];
 
+    let storage;
+
     //const twitter = await getRequestTwitter(search);
 
     //console.log(twitter);
@@ -77,19 +104,26 @@ async function perform_SA(message) {
     await getRequestTwitter(search).then((value) => {
       console.log("_____------_______ start");
 
-        perform_SA(value).then((value2) => {
-          san = value2;
-        });
+      storage = value;
 
-        for (let i = 0; i < value.meta.result_count; i++ ){
-          tweets.push(value.data[i].text);
-        }
-      
+      for (let i = 0; i < value.meta.result_count; i++ ){
+        tweets.push(value.data[i].text);
+      }
 
       console.log("_____------_______ end");
     });
-
     
+
+    console.log(storage);
+
+    sa = await perform_SA(storage).then((value2) => {
+
+      console.log("this is a poop joke");
+      //console.log(sa);
+      console.log(value2);
+      san = value2;
+    });
+  
 
     result.push(tweets);
     result.push(san);
@@ -110,6 +144,8 @@ router.get("/:query", (req, res) => {
     //call the apis
     apicall().then((value) => {
 
+      console.log(value)
+
       res.render("api", {
         tweets: value[0],
         //sent: sent,
@@ -124,9 +160,6 @@ router.get("/:query", (req, res) => {
     //let testing_tweet_array = ["textBlob sure looks like it has some interresting features","The new design is awful!","I’m not sure if I like the new design"];
 
     //testing_tweet_array.forEach(perform_SA);
-
-    
-    
 
   });
 
