@@ -5,6 +5,17 @@ const router = express.Router();
 
 const endpointUrl = `https://api.twitter.com/2/tweets/search/recent`;
 
+var current_polarity_total = 0;
+var counted_tweets = 0;
+
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
 async function getRequestTwitter(search) {
 
     //set params for twitter api
@@ -21,7 +32,7 @@ async function getRequestTwitter(search) {
         }
     })
 
-    console.log("called api");
+    //console.log("called api");
     //console.log(res.body);
 
     //return
@@ -42,12 +53,20 @@ async function pythonread(text){
 
     process2.stdout.on('data', (data) => {
         temp = data.toString().split("\n");
-        //console.log(message);
-        //console.log(temp[0]);
-        //console.log(temp[1]);
-        //console.log("___________");
-        console.log(temp);
+        //console.log(text);
+        console.log(temp[0]);
+        console.log(temp[1]);
+        console.log("___________");
+
+        if (parseFloat(temp[1]) > .6) {
+          current_polarity_total = current_polarity_total + parseFloat(temp[0]);
+          counted_tweets = counted_tweets +1;
+        }
+
+        //parseInt("10")
+        //console.log(temp);
         out = temp;
+        //return out;
         if(out !== undefined){
           return out;
         }
@@ -69,7 +88,7 @@ async function perform_SA(message) {
   for (let i = 0; i < message.meta.result_count; i++){
 
     await pythonread(message.data[i].text).then((value) =>{
-      console.log(value)
+      //console.log(value)
       out.push(value);
     });
     
@@ -78,15 +97,15 @@ async function perform_SA(message) {
   //   });
 
     if(i + 1 === message.meta.result_count){
-      console.log("this is a fart joke");
-      console.log(out);
+      //console.log("this is a fart joke");
+      //console.log(out);
       return out;
     }
   }
 
-  console.log(out);
+  //console.log(out);
 
-  console.log("why");
+  //console.log("why");
   //return out;
   
 }
@@ -106,7 +125,7 @@ async function perform_SA(message) {
     //console.log(twitter);
   
     await getRequestTwitter(search).then((value) => {
-      console.log("_____------_______ start");
+      //console.log("_____------_______ start");
 
       storage = value;
 
@@ -114,33 +133,22 @@ async function perform_SA(message) {
         tweets.push(value.data[i].text);
       }
 
-      console.log("_____------_______ end");
+      //console.log("_____------_______ end");
     });
     
 
-    console.log(storage);
+    //console.log(storage);
 
     sa = await perform_SA(storage).then((value2) => {
-
-      console.log("this is a poop joke");
-      //console.log(sa);
-      console.log(value2);
-      san = value2;
     });
-  
-
     result.push(tweets);
-    result.push(san);
 
-    // console.log(result);
-    // console.log(result[0]);
-    // console.log(result[1]);
     console.log("this should be at the end");
 
     return result;
   }
-
-router.get("/:query", (req, res) => {
+//while(true){
+  router.get("/:query", (req, res) => {
 
     //set the parameter form url as a variable for convienance
     search = req.params.query;
@@ -148,7 +156,10 @@ router.get("/:query", (req, res) => {
     //call the apis
     apicall().then((value) => {
 
-      console.log(value)
+      //console.log(value)
+
+      console.log("___________recall__test ____________")
+
 
       res.render("api", {
         tweets: value[0],
@@ -157,14 +168,20 @@ router.get("/:query", (req, res) => {
       });
     
       res.end();
+
     }).catch((e) => {
       //if an error happens then render an error page
       //res.end();
     })
-    //let testing_tweet_array = ["textBlob sure looks like it has some interresting features","The new design is awful!","I’m not sure if I like the new design"];
-
-    //testing_tweet_array.forEach(perform_SA);
 
   });
 
-  module.exports = router;
+module.exports = router;
+
+
+//sleep(10000);
+//console.log("update check");
+//console.log(current_polarity_total);
+//console.log(counted_tweets);
+//sleep(10000);
+//} 
