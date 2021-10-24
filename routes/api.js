@@ -40,7 +40,7 @@ async function pythonread(text){
 
     let process2 = spawn('python',['./SA.py', text]);
 
-    await process2.stdout.on('close', (data) => {
+    process2.stdout.on('data', (data) => {
         temp = data.toString().split("\n");
         //console.log(message);
         //console.log(temp[0]);
@@ -48,15 +48,18 @@ async function pythonread(text){
         //console.log("___________");
         console.log(temp);
         out = temp;
+        if(out !== undefined){
+          return out;
+        }
     });
-
-    while(1){
-      console.log("weewee");
-      console.log(out);
+  
+    // while(1){
+    //   console.log("test point");
+    //   console.log(out);
       if(out !== undefined){
         return out;
       }
-    }
+    // }
 }
 
 async function perform_SA(message) {
@@ -66,6 +69,7 @@ async function perform_SA(message) {
   for (let i = 0; i < message.meta.result_count; i++){
 
     await pythonread(message.data[i].text).then((value) =>{
+      console.log(value)
       out.push(value);
     });
     
