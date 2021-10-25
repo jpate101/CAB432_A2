@@ -45,32 +45,39 @@ async function getRequestTwitter(search) {
 
 async function pythonread(text){
 
-  let out;
+  let out = [];
 
   let { spawn } = require('child_process')
 
     let process2 = spawn('python',['./SA.py', text]);
 
-    process2.stdout.on('data', (data) => {
-        temp = data.toString().split("\n");
-        //console.log(text);
-        console.log(temp[0]);
-        console.log(temp[1]);
-        console.log("___________");
+    console.log("pont2");
 
-        if (parseFloat(temp[1]) > .6) {
-          current_polarity_total = current_polarity_total + parseFloat(temp[0]);
-          counted_tweets = counted_tweets +1;
-        }
+    for await(const chunk of process2.stdout) {
+      console.log(chunk);
+      out.push(chunk.toString().split("\n"));
+    }
 
-        //parseInt("10")
-        //console.log(temp);
-        out = temp;
-        //return out;
-        if(out !== undefined){
-          return out;
-        }
-    });
+    // await process2.stdout.on('data', (data) => {
+    //     temp = data.toString().split("\n");
+    //     //console.log(text);
+    //     console.log(temp[0]);
+    //     console.log(temp[1]);
+    //     console.log("___________");
+
+    //     if (parseFloat(temp[1]) > .6) {
+    //       current_polarity_total = current_polarity_total + parseFloat(temp[0]);
+    //       counted_tweets = counted_tweets +1;
+    //     }
+
+    //     //parseInt("10")
+    //     //console.log(temp);
+    //     out = temp;
+    //     //return out;
+    //     if(out !== undefined){
+    //       return out;
+    //     }
+    // });
   
     // while(1){
     //   console.log("test point");
@@ -83,9 +90,12 @@ async function pythonread(text){
 
 async function perform_SA(message) {
 
+
   let out = [];
 
   for (let i = 0; i < message.meta.result_count; i++){
+
+    console.log("pont1");
 
     await pythonread(message.data[i].text).then((value) =>{
       //console.log(value)
@@ -120,12 +130,12 @@ async function perform_SA(message) {
 
     let storage;
 
-    //const twitter = await getRequestTwitter(search);
+    // const twitter = await getRequestTwitter(search);
 
-    //console.log(twitter);
+    // console.log(twitter);
   
     await getRequestTwitter(search).then((value) => {
-      //console.log("_____------_______ start");
+      console.log("_____------_______ start");
 
       storage = value;
 
@@ -133,15 +143,17 @@ async function perform_SA(message) {
         tweets.push(value.data[i].text);
       }
 
-      //console.log("_____------_______ end");
+      console.log("_____------_______ end");
     });
     
 
-    //console.log(storage);
+    console.log(storage);
 
     sa = await perform_SA(storage).then((value2) => {
+      san = value2;
     });
     result.push(tweets);
+    result.push(san);
 
     console.log("this should be at the end");
 
@@ -156,7 +168,7 @@ async function perform_SA(message) {
     //call the apis
     apicall().then((value) => {
 
-      //console.log(value)
+      console.log(value)
 
       console.log("___________recall__test ____________")
 
