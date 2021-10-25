@@ -5,17 +5,6 @@ const router = express.Router();
 
 const endpointUrl = `https://api.twitter.com/2/tweets/search/recent`;
 
-var current_polarity_total = 0;
-var counted_tweets = 0;
-
-function sleep(milliseconds) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
-}
-
 async function getRequestTwitter(search) {
 
     //set params for twitter api
@@ -125,15 +114,32 @@ async function perform_SA(message) {
 
       console.log("___________recall__test ____________")
 
+      let current_polarity_total = 0;
+
+      for (let i = 0; i < value[1].length; i++) {
+        console.log(parseFloat(value[1][i][0][1]));
+
+        // if(parseFloat((value[1][i][0][1]) > 0.1 && !(parseFloat(value[1][i][0][1]) < 0 )) || (parseFloat(value[1][i][0][1]) < -0.1 && !(parseFloat(value[1][i][0][1]) > 0))){
+        if(parseFloat(value[1][i][0][1]) > 0.1 ){
+
+        current_polarity_total += parseFloat(value[1][i][0][0]);
+
+          console.log("value")
+          console.log(parseFloat(value[1][i][0][0]));
+        }
+      }
+
+      console.log(current_polarity_total);
+
       let polarity = "";
 
-      if(current_polarity_total > .5){
+      if(current_polarity_total > 0.25){
         polarity = "Positive";
 
-      }else if (current_polarity_total > .5) {
-        polarity = "Neutral";
-      } else {
+      }else if (current_polarity_total < -0.25 ) {
         polarity = "Negitive";
+      } else {
+        polarity = "Neutral";
       }
 
       res.render("api", {
