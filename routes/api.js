@@ -173,10 +173,9 @@ async function perform_SA(message) {
 
       res.render("api", {
         tweets: value[0],
-        sentiment: polarity,
+        sentiment: polarity,//doesnt work 
         query: search
       });
-    
       res.end();
 
     }).catch((e) => {
