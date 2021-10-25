@@ -32,9 +32,6 @@ async function getRequestTwitter(search) {
         }
     })
 
-    //console.log("called api");
-    //console.log(res.body);
-
     //return
     if (res.body) {
         return res.body;
@@ -58,34 +55,9 @@ async function pythonread(text){
       out.push(chunk.toString().split("\n"));
     }
 
-    // await process2.stdout.on('data', (data) => {
-    //     temp = data.toString().split("\n");
-    //     //console.log(text);
-    //     console.log(temp[0]);
-    //     console.log(temp[1]);
-    //     console.log("___________");
-
-    //     if (parseFloat(temp[1]) > .6) {
-    //       current_polarity_total = current_polarity_total + parseFloat(temp[0]);
-    //       counted_tweets = counted_tweets +1;
-    //     }
-
-    //     //parseInt("10")
-    //     //console.log(temp);
-    //     out = temp;
-    //     //return out;
-    //     if(out !== undefined){
-    //       return out;
-    //     }
-    // });
-  
-    // while(1){
-    //   console.log("test point");
-    //   console.log(out);
       if(out !== undefined){
         return out;
       }
-    // }
 }
 
 async function perform_SA(message) {
@@ -98,26 +70,12 @@ async function perform_SA(message) {
     console.log("pont1");
 
     await pythonread(message.data[i].text).then((value) =>{
-      //console.log(value)
       out.push(value);
     });
-    
-  //   process2.stderr.on('data', (data) => {
-  //      console.log(data.toString());
-  //   });
-
     if(i + 1 === message.meta.result_count){
-      //console.log("this is a fart joke");
-      //console.log(out);
       return out;
     }
   }
-
-  //console.log(out);
-
-  //console.log("why");
-  //return out;
-  
 }
 
   async function apicall() {
@@ -129,10 +87,6 @@ async function perform_SA(message) {
     let tweets = [];
 
     let storage;
-
-    // const twitter = await getRequestTwitter(search);
-
-    // console.log(twitter);
   
     await getRequestTwitter(search).then((value) => {
       console.log("_____------_______ start");
@@ -159,7 +113,6 @@ async function perform_SA(message) {
 
     return result;
   }
-//while(true){
   router.get("/:query", (req, res) => {
 
     //set the parameter form url as a variable for convienance
@@ -198,12 +151,3 @@ async function perform_SA(message) {
   });
 
 module.exports = router;
-
-
-
-//sleep(10000);
-//console.log("update check");
-//console.log(current_polarity_total);
-//console.log(counted_tweets);
-//sleep(10000);
-//} 
