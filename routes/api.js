@@ -160,10 +160,20 @@ async function perform_SA(message) {
 
       console.log("___________recall__test ____________")
 
+      let polarity = "";
+
+      if(current_polarity_total > .5){
+        polarity = "Positive";
+
+      }else if (current_polarity_total > .5) {
+        polarity = "Neutral";
+      } else {
+        polarity = "Negitive";
+      }
 
       res.render("api", {
         tweets: value[0],
-        //sent: sent,
+        sentiment: polarity,
         query: search
       });
     
@@ -177,6 +187,7 @@ async function perform_SA(message) {
   });
 
 module.exports = router;
+
 
 
 //sleep(10000);
