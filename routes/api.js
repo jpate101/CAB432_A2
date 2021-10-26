@@ -59,6 +59,11 @@ async function pythonread(text){
       out.push(chunk.toString().split("\n"));
     }
 
+    process2.stderr.on('data', (data) => {
+          console.log(data.toString());
+      });
+    
+
       if(out !== undefined){
         return out;
       }
@@ -177,7 +182,7 @@ async function perform_SA(message) {
             current_polarity_total += parseFloat(value[1][i][0][0]);
 
               console.log("value")
-              console.log(parseFloat(value[1][i][0][0]));
+              //console.log(parseFloat(value[1][i][0][0]));
             }
           }
 

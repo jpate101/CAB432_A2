@@ -6,6 +6,7 @@
     "keys": "^0.1.2",
     "needle": "^3.0.0",
     "pug": "^3.0.2",
-    "python-shell": "^3.0.1"
+    "python-shell": "^3.0.1",
+    "render": "^0.1.4"
   }
 }
