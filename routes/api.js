@@ -151,7 +151,8 @@ async function perform_SA(message) {
 
     }).catch((e) => {
       //if an error happens then render an error page
-      //res.end();
+      res.render("error");
+      res.end();
     })
 
   });
