@@ -6,9 +6,10 @@ WORKDIR /app
 COPY . . 
 #RUN npm install
 
-#RUN apt-get update || : && apt-get install python -y
-#RUN apt-get install python3-pip -y
+RUN apt-get update || : && apt-get install python -y
+RUN apt-get install python3-pip -y
 
+<<<<<<< Updated upstream
 RUN apt-get update
 RUN apt-get install curl
 
@@ -29,5 +30,9 @@ RUN pip install vaderSentiment
 RUN npm install
 RUN npm install render
 
+=======
+RUN pip install textblob 
+RUN pip install vaderSentiment
+>>>>>>> Stashed changes
 EXPOSE 9000
 CMD ["node", "app.js"]
